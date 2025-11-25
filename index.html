@@ -15,7 +15,7 @@
       --accent-soft:rgba(87,136,153,.08);
       --border:#d0dde2;
       --danger:#b91c1c;
-      --success:#2d8a4e; /* 追加: 成功時の色 */
+      --success:#2d8a4e;
     }
     *{box-sizing:border-box;}
     html,body{
@@ -95,7 +95,6 @@
       box-shadow:0 2px 6px rgba(0,0,0,.08);
       transition:transform .05s ease, box-shadow .05s ease, background .15s ease;
     }
-    /* 保存系ボタンの強調 */
     button.primary-save {
       background: var(--ink);
     }
@@ -118,7 +117,6 @@
       box-shadow: none;
     }
 
-    /* ステータスメッセージ */
     #statusMessage {
       font-size: 0.8rem;
       margin-left: 8px;
@@ -185,7 +183,6 @@
       font-size:0.8rem;
       margin-bottom:2px;
     }
-    /* チェックボックス用のラベル調整 */
     .field label input[type="checkbox"] {
       margin-right: 6px;
     }
@@ -292,6 +289,23 @@
       .summary-card{
         border:1px solid #ccc;
       }
+
+      /* === チェックリストのみ印刷用のスタイル === */
+      body.print-checklist-only .page-header,
+      body.print-checklist-only .section:not(#section-checklist),
+      body.print-checklist-only .summary-card {
+        display: none !important;
+      }
+      body.print-checklist-only #section-checklist {
+        display: block !important;
+        border: none;
+        margin: 0;
+        padding: 0;
+      }
+      /* チェックリスト印刷時にヘッダー的な余白を作る */
+      body.print-checklist-only .page {
+        padding-top: 40px;
+      }
     }
   </style>
 </head>
@@ -314,16 +328,23 @@
       </button>
       <button type="button" class="secondary" id="loadBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        保存データ読込
+        読込
       </button>
       
       <span style="border-left:1px solid var(--border); height:20px; margin:0 4px;"></span>
 
+      <!-- 印刷系ボタン -->
       <button type="button" id="printBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-        印刷
+        全体印刷
       </button>
-      <button type="button" class="secondary" id="clearBtn">すべてクリア</button>
+      <!-- 新しいボタン: チェックリストのみ印刷 -->
+      <button type="button" class="secondary" id="printChecklistBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        チェックリストのみ印刷
+      </button>
+
+      <button type="button" class="secondary" id="clearBtn" style="margin-left:auto;">クリア</button>
       
       <!-- ステータス表示エリア -->
       <span id="statusMessage"></span>
@@ -956,7 +977,7 @@
     </section>
 
     <!-- L. 初回クライアント向け：預かり資料チェックリスト -->
-    <section class="section">
+    <section class="section" id="section-checklist">
       <div class="section-header">
         <div class="section-title">
           <span class="code">L.</span> 初回クライアント向け：預かり資料チェックリスト
@@ -1128,10 +1149,23 @@
     }
   });
 
-  // 印刷
+  // 全体印刷
   document.getElementById('printBtn').addEventListener('click', function(){
     window.print();
   });
+
+  // チェックリストのみ印刷
+  document.getElementById('printChecklistBtn').addEventListener('click', function(){
+    document.body.classList.add('print-checklist-only');
+    window.print();
+    // 印刷ダイアログが閉じた後にクラスを削除（ブラウザによっては即座に実行されるが、多くの場合問題ない）
+    // より確実にするには onafterprint を使う
+  });
+
+  window.addEventListener('afterprint', () => {
+    document.body.classList.remove('print-checklist-only');
+  });
+
 
   // 全クリア
   document.getElementById('clearBtn').addEventListener('click', function(){
@@ -1155,7 +1189,6 @@
       if(input.tagName === 'SELECT'){
         value = input.value || input.options[input.selectedIndex]?.text || '';
       }else if(input.type === 'checkbox'){
-        // 未チェックのチェックボックスは要約に出さない
         if(!input.checked) return;
         value = '預かり済み';
       }else if(input.type === 'radio'){
