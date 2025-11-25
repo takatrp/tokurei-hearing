@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>特例事業承継税制ヒアリングフォーム（保存機能付）</title>
+
+  <style>
+    :root{
+      --bg:#f4f9fb;
+      --card:#ffffff;
+      --ink:#1e2a2d;
+      --muted:#5a6a6d;
+      --accent:#578899;
+      --accent-soft:rgba(87,136,153,.08);
+      --border:#d0dde2;
+      --danger:#b91c1c;
+      --success:#2d8a4e;
+    }
+    *{box-sizing:border-box;}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+    }
+    body{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .page{
+      max-width:1080px;
+      margin:0 auto;
+      padding:16px 16px 32px;
+    }
+    .page-header{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .title-block h1{
+      font-size:1.3rem;
+      margin:0 0 4px;
+      letter-spacing:0.03em;
+    }
+    .title-block p{
+      margin:0;
+      font-size:0.85rem;
+      color:var(--muted);
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:0.7rem;
+      background:var(--accent-soft);
+      color:var(--accent);
+      margin-bottom:4px;
+    }
+
+    /* ツールバーとステータス表示のスタイル調整 */
+    .toolbar-container {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      padding-top: 8px;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items: center;
+    }
+    
+    button{
+      border:none;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:0.8rem;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+      transition:transform .05s ease, box-shadow .05s ease, background .15s ease;
+    }
+    /* 保存系ボタンの強調 */
+    button.primary-save {
+      background: var(--ink);
+    }
+    button.secondary{
+      background:transparent;
+      border:1px solid var(--border);
+      color:var(--ink);
+      box-shadow:none;
+    }
+    button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 4px 10px rgba(0,0,0,.1);
+    }
+    button.secondary:hover{
+      box-shadow:0 2px 6px rgba(0,0,0,.06);
+      background:#f8fbfc;
+    }
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    /* ステータスメッセージ */
+    #statusMessage {
+      font-size: 0.8rem;
+      margin-left: 8px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      color: var(--success);
+    }
+    #statusMessage.visible {
+      opacity: 1;
+    }
+    #statusMessage.error {
+      color: var(--danger);
+    }
+
+    form{
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(35,80,90,.08);
+      padding:16px 16px 8px;
+    }
+
+    .section{
+      border-top:1px solid var(--border);
+      padding-top:12px;
+      margin-top:12px;
+    }
+    .section:first-of-type{
+      border-top:none;
+      padding-top:0;
+      margin-top:0;
+    }
+    .section-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:6px;
+      gap:8px;
+    }
+    .section-title{
+      font-size:0.98rem;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .section-title span.code{
+      font-size:0.75rem;
+      padding:2px 8px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+    }
+    .section-note{
+      font-size:0.72rem;
+      color:var(--muted);
+    }
+
+    .field{
+      margin-bottom:8px;
+    }
+    .field label{
+      display:block;
+      font-size:0.8rem;
+      margin-bottom:2px;
+    }
+    .field small{
+      display:block;
+      font-size:0.72rem;
+      color:var(--muted);
+      margin-top:1px;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea,
+    select{
+      width:100%;
+      padding:6px 8px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      font-size:0.8rem;
+      font-family:inherit;
+      outline:none;
+      background:#fdfefe;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    textarea{
+      resize:vertical;
+      min-height:48px;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(87,136,153,.25);
+      background:#fff;
+    }
+
+    .summary-card{
+      margin-top:16px;
+      padding:10px 12px 12px;
+      border-radius:12px;
+      border:1px dashed var(--border);
+      background:var(--accent-soft);
+    }
+    .summary-card h2{
+      font-size:0.9rem;
+      margin:0 0 6px;
+    }
+    .summary-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-bottom:6px;
+    }
+    #summaryText{
+      width:100%;
+      font-size:0.78rem;
+      min-height:120px;
+      padding:6px 8px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      font-family:inherit;
+      background:#fdfefe;
+    }
+
+    .footer-note{
+      margin-top:12px;
+      font-size:0.7rem;
+      color:var(--muted);
+      text-align:right;
+    }
+
+    @media (min-width:768px){
+      .page{
+        padding:24px 16px 32px;
+      }
+      form{
+        padding:20px 20px 12px;
+      }
+      .section-grid{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px 16px;
+      }
+    }
+
+    @media print{
+      body{
+        background:#fff;
+      }
+      .page{
+        max-width:none;
+        margin:0;
+        padding:0;
+      }
+      .toolbar-container,
+      .summary-actions button,
+      .footer-note{
+        display:none !important;
+      }
+      form{
+        box-shadow:none;
+        border-radius:0;
+      }
+      .summary-card{
+        border:1px solid #ccc;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="page-header">
+    <div class="title-block">
+      <div class="tag">特例事業承継税制・ヒアリング用</div>
+      <h1>特例事業承継税制ヒアリングフォーム</h1>
+      <p>概要説明はパンフレット・PDFを用い、本フォームで要件・適否・オーナー意向を整理する前提です。</p>
+    </div>
+  </header>
+
+  <div class="toolbar-container">
+    <div class="toolbar">
+      <!-- 新機能: 一時保存と読み込み -->
+      <button type="button" class="primary-save" id="saveBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        一時保存
+      </button>
+      <button type="button" class="secondary" id="loadBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        保存データ読込
+      </button>
+      
+      <span style="border-left:1px solid var(--border); height:20px; margin:0 4px;"></span>
+
+      <button type="button" id="printBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        印刷
+      </button>
+      <button type="button" class="secondary" id="clearBtn">クリア</button>
+      
+      <!-- ステータス表示エリア -->
+      <span id="statusMessage"></span>
+    </div>
+  </div>
+
+  <form id="hearingForm">
+    <!-- 0. 基本情報 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">0.</span> 基本情報
+        </div>
+        <div class="section-note">面談の基本情報・相談の背景</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="basic_date">面談日</label>
+          <input type="date" id="basic_date" name="basic_date">
+        </div>
+        <div class="field">
+          <label for="basic_company">会社名・法人番号</label>
+          <input type="text" id="basic_company" name="basic_company" placeholder="例）〇〇株式会社（法人番号：XXXXXXXXXXXX）">
+        </div>
+        <div class="field">
+          <label for="basic_address">本店所在地</label>
+          <input type="text" id="basic_address" name="basic_address">
+        </div>
+        <div class="field">
+          <label for="basic_participants">面談参加者（役職）</label>
+          <input type="text" id="basic_participants" name="basic_participants" placeholder="例）代表取締役〇〇、後継者候補〇〇（専務）など">
+        </div>
+      </div>
+      <div class="field">
+        <label for="basic_background">相談のきっかけ・緊急度</label>
+        <textarea id="basic_background" name="basic_background" placeholder="例）株価上昇への不安／金融機関からの紹介／相続を数年後に予定している 等"></textarea>
+      </div>
+    </section>
+
+    <!-- A. 制度の前提・スケジュール感 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">A.</span> 制度の前提・スケジュール感
+        </div>
+        <div class="section-note">特例措置の期限と承継時期のイメージ</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="a1">A-1. 特例事業承継税制（法人版・特例措置）の検討である</label>
+          <select id="a1" name="a1">
+            <option value="">選択してください</option>
+            <option>はい</option>
+            <option>いいえ</option>
+            <option>未確定</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="a2">A-2. 特例承継計画を2026年3月31日までに提出できる見込み</label>
+          <select id="a2" name="a2">
+            <option value="">選択してください</option>
+            <option>十分間に合う見込み</option>
+            <option>ギリギリだが間に合わせたい</option>
+            <option>難しい可能性が高い</option>
+            <option>未検討・不明</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="a3">A-3. 実際の贈与・相続を行いたい（行えそうな）時期</label>
+          <input type="text" id="a3" name="a3" placeholder="例）◯年以内、◯歳になるタイミング 等">
+        </div>
+        <div class="field">
+          <label for="a4">A-4. 承継方法のイメージ</label>
+          <select id="a4" name="a4">
+            <option value="">選択してください</option>
+            <option>贈与型を想定</option>
+            <option>相続型を想定</option>
+            <option>両方の可能性を比較したい</option>
+            <option>まだ決めていない</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="a5">A-5. 後継者候補の人数</label>
+          <select id="a5" name="a5">
+            <option value="">選択してください</option>
+            <option>1名</option>
+            <option>2〜3名</option>
+            <option>4名以上</option>
+            <option>未定</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- B. 会社要件 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">B.</span> 会社要件（中小企業要件・資産管理会社該当性）
+        </div>
+        <div class="section-note">中小企業者該当性と資産構成</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="b1_industry">B-1. 業種</label>
+          <input type="text" id="b1_industry" name="b1_industry" placeholder="例）製造業／建設業／サービス業 等">
+        </div>
+        <div class="field">
+          <label for="b1_capital">B-1. 資本金・出資金</label>
+          <input type="text" id="b1_capital" name="b1_capital" placeholder="例）1,000万円">
+        </div>
+        <div class="field">
+          <label for="b1_employees">B-1. 従業員数（常時使用）</label>
+          <input type="number" id="b1_employees" name="b1_employees" min="0" placeholder="人数">
+        </div>
+        <div class="field">
+          <label for="b1_status">B-1. 中小企業基本法上の中小企業者該当性</label>
+          <select id="b1_status" name="b1_status">
+            <option value="">選択してください</option>
+            <option>該当（確認済み）</option>
+            <option>おそらく該当だが要確認</option>
+            <option>該当しない可能性あり</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="b2_listed">B-2. 上場会社ではない</label>
+          <select id="b2_listed" name="b2_listed">
+            <option value="">選択してください</option>
+            <option>非上場である</option>
+            <option>上場企業のグループ（上場会社等の100％子会社を含む）</option>
+            <option>その他・特殊なケース</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="b2_subsidiary">B-2. 上場会社等の100％子会社ではない</label>
+          <select id="b2_subsidiary" name="b2_subsidiary">
+            <option value="">選択してください</option>
+            <option>100％子会社ではない</option>
+            <option>100％子会社である</option>
+            <option>構造が複雑で要確認</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="b3_asset_ratio">B-3. 特定資産比率（概算）</label>
+          <input type="text" id="b3_asset_ratio" name="b3_asset_ratio" placeholder="例）土地・有価証券・現預金・貸付金等の割合（◯％程度）">
+        </div>
+        <div class="field">
+          <label for="b3_income_ratio">B-3. 賃貸料・配当・利息等の運用収入比率（概算）</label>
+          <input type="text" id="b3_income_ratio" name="b3_income_ratio" placeholder="例）運用収入が売上の◯％程度 等">
+        </div>
+        <div class="field">
+          <label for="b3_risk">B-3. 資産管理会社に該当する可能性</label>
+          <select id="b3_risk" name="b3_risk">
+            <option value="">選択してください</option>
+            <option>低いと思われる</option>
+            <option>判断が分かれる水準</option>
+            <option>高い可能性がある</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="b3_memo">B-3. 資産構成・今後の投資計画に関するメモ</label>
+          <textarea id="b3_memo" name="b3_memo" placeholder="例）賃貸不動産の取得予定／有価証券運用の拡大予定 等"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- C. 株主構成・議決権 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">C.</span> 株主構成・議決権の状況
+        </div>
+        <div class="section-note">現状の持株・今後の調整方針</div>
+      </div>
+      <div class="field">
+        <label for="c1_shareholders">C-1. 現在の株主構成</label>
+        <textarea id="c1_shareholders" name="c1_shareholders" placeholder="株主名・株数・議決権割合などを記載（例：先代◯％、配偶者◯％、長男◯％、役員◯％、取引先◯％ 等）"></textarea>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="c1_founder_ratio">C-1. 先代経営者の持株割合（概算）</label>
+          <input type="text" id="c1_founder_ratio" name="c1_founder_ratio" placeholder="例）60％程度">
+        </div>
+        <div class="field">
+          <label for="c1_family_ratio">C-1. 同族関係者全体の持株割合（概算）</label>
+          <input type="text" id="c1_family_ratio" name="c1_family_ratio" placeholder="例）90％程度">
+        </div>
+        <div class="field">
+          <label for="c1_employee_ratio">C-1. 社内役員・従業員株主の割合</label>
+          <input type="text" id="c1_employee_ratio" name="c1_employee_ratio">
+        </div>
+        <div class="field">
+          <label for="c1_outside_ratio">C-1. 社外株主（取引先・金融機関等）の有無・割合</label>
+          <input type="text" id="c1_outside_ratio" name="c1_outside_ratio">
+        </div>
+
+        <div class="field">
+          <label for="c2_family_majority">C-2. 先代と同族関係者で議決権総数の50％超を保有しているか</label>
+          <select id="c2_family_majority" name="c2_family_majority">
+            <option value="">選択してください</option>
+            <option>50％超を保有している</option>
+            <option>50％程度か微妙な水準</option>
+            <option>50％未満である</option>
+            <option>不明・要確認</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c2_successor_majority">C-2. 承継後、後継者が議決権の過半数を確保できる見込み</label>
+          <select id="c2_successor_majority" name="c2_successor_majority">
+            <option value="">選択してください</option>
+            <option>確保できる見込みが高い</option>
+            <option>調整すれば確保可能</option>
+            <option>現状では難しい</option>
+            <option>未検討・不明</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c2_top_holder">C-2. 後継者が「同族内の最大議決権保有者」になりうるか</label>
+          <select id="c2_top_holder" name="c2_top_holder">
+            <option value="">選択してください</option>
+            <option>なりうる</option>
+            <option>複数名が拮抗する可能性あり</option>
+            <option>別の親族の方が多くなりそう</option>
+            <option>未検討・不明</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c2_multi_successor">C-2. 複数後継者案（2〜3名）の可能性</label>
+          <select id="c2_multi_successor" name="c2_multi_successor">
+            <option value="">選択してください</option>
+            <option>単独後継者で想定</option>
+            <option>複数後継者案も検討したい</option>
+            <option>複数後継者で進めたい</option>
+            <option>未定</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="c3_adjust_plan">C-3. 今後想定される持株調整の必要性・方針</label>
+          <textarea id="c3_adjust_plan" name="c3_adjust_plan" placeholder="例）自社株買い、兄弟姉妹間の整理、第三者株主の買取り 等"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- D. 先代経営者の状況・意向 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">D.</span> 先代経営者の状況・意向
+        </div>
+        <div class="section-note">健康状態・引退時期・価値観</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="d1_name">D-1. 先代経営者 氏名</label>
+          <input type="text" id="d1_name" name="d1_name">
+        </div>
+        <div class="field">
+          <label for="d1_age">D-1. 年齢</label>
+          <input type="number" id="d1_age" name="d1_age" min="0">
+        </div>
+        <div class="field">
+          <label for="d1_health">D-1. 健康状態</label>
+          <input type="text" id="d1_health" name="d1_health" placeholder="例）おおむね良好／持病あり 等">
+        </div>
+        <div class="field">
+          <label for="d1_position">D-1. 現在の役職・権限</label>
+          <input type="text" id="d1_position" name="d1_position" placeholder="例）代表取締役社長、実質的な決裁権 等">
+        </div>
+
+        <div class="field">
+          <label for="d2_retire_timing">D-2. 後継者へ経営権を譲りたい（譲れる）時期</label>
+          <input type="text" id="d2_retire_timing" name="d2_retire_timing" placeholder="例）◯年以内、◯歳まで 等">
+        </div>
+        <div class="field">
+          <label for="d2_stock_view">D-2. 自社株に対する思い（支配権・家族への分散 等）</label>
+          <textarea id="d2_stock_view" name="d2_stock_view"></textarea>
+        </div>
+        <div class="field">
+          <label for="d2_exit_image">D-2. 将来の出口イメージ</label>
+          <select id="d2_exit_image" name="d2_exit_image">
+            <option value="">選択してください</option>
+            <option>親族内承継を前提</option>
+            <option>社内（役員・従業員）承継もあり得る</option>
+            <option>M&A・第三者への売却も視野に入れている</option>
+            <option>廃業も含めてまだ決めていない</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="d3_family_agree">D-3. 他の相続人候補との自社株集中に関する合意状況</label>
+          <select id="d3_family_agree" name="d3_family_agree">
+            <option value="">選択してください</option>
+            <option>概ね合意済み</option>
+            <option>方向性は共有しているが細部は未合意</option>
+            <option>意見の相違がある</option>
+            <option>まだ話し合っていない</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="d3_other_assets">D-3. 自社株以外の財産の配分方針（たたき台）</label>
+          <textarea id="d3_other_assets" name="d3_other_assets"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- E. 後継者候補の状況 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">E.</span> 後継者候補の状況
+        </div>
+        <div class="section-note">候補者の属性・要件・覚悟</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="e1_name">E-1. 後継者候補 氏名</label>
+          <input type="text" id="e1_name" name="e1_name">
+        </div>
+        <div class="field">
+          <label for="e1_age">E-1. 年齢</label>
+          <input type="number" id="e1_age" name="e1_age" min="0">
+        </div>
+        <div class="field">
+          <label for="e1_relation">E-1. 親族内／親族外・社内／社外</label>
+          <input type="text" id="e1_relation" name="e1_relation" placeholder="例）長男（親族内・社内）、役員（親族外・社内） 等">
+        </div>
+        <div class="field">
+          <label for="e1_position">E-1. 現在の役職と勤務年数</label>
+          <input type="text" id="e1_position" name="e1_position" placeholder="例）専務取締役・勤務15年 等">
+        </div>
+        <div class="field">
+          <label for="e1_involve">E-1. 経営参加の実績（事業計画・人事・金融機関対応など）</label>
+          <textarea id="e1_involve" name="e1_involve"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="e2_representative">E-2. 贈与・相続時点で代表権を持つことが可能か</label>
+          <select id="e2_representative" name="e2_representative">
+            <option value="">選択してください</option>
+            <option>承継時に代表に就任する想定</option>
+            <option>先に代表に就任させ、その後に承継</option>
+            <option>代表就任は当面予定していない</option>
+            <option>未定・要検討</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="e2_majority">E-2. 後継者と特別関係者で議決権過半数を確保しうるか</label>
+          <select id="e2_majority" name="e2_majority">
+            <option value="">選択してください</option>
+            <option>問題なく確保できる</option>
+            <option>一定の調整が必要</option>
+            <option>現状では難しい</option>
+            <option>不明・要分析</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="e2_multi">E-2. 後継者複数（最大3名）の検討状況</label>
+          <select id="e2_multi" name="e2_multi">
+            <option value="">選択してください</option>
+            <option>単独後継者で進めたい</option>
+            <option>複数後継者も選択肢として検討</option>
+            <option>複数後継者で進めたい</option>
+            <option>未定</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="e3_commitment">E-3. 後継者本人の覚悟・ライフプランに関するメモ</label>
+          <textarea id="e3_commitment" name="e3_commitment" placeholder="経営者としての責任・リスクの理解度、他社勤務希望やM&A志向との整合性など"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- F. 事業の実態・継続可能性 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">F.</span> 事業の実態・今後の継続可能性
+        </div>
+        <div class="section-note">事業内容・収益構造・雇用維持</div>
+      </div>
+      <div class="field">
+        <label for="f1_business">F-1. 現在の事業内容・主たる収益源</label>
+        <textarea id="f1_business" name="f1_business"></textarea>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="f1_sales">F-1. 売上規模・利益水準（直近3期の概要）</label>
+          <textarea id="f1_sales" name="f1_sales" placeholder="例）売上高・営業利益・経常利益の推移など"></textarea>
+        </div>
+        <div class="field">
+          <label for="f1_concentration">F-1. 得意先・仕入先の集中度合い</label>
+          <textarea id="f1_concentration" name="f1_concentration"></textarea>
+        </div>
+        <div class="field">
+          <label for="f2_continuity">F-2. 今後5〜10年の事業継続・成長に関する見通し</label>
+          <textarea id="f2_continuity" name="f2_continuity"></textarea>
+        </div>
+        <div class="field">
+          <label for="f2_exit">F-2. 廃業・事業縮小・M&A売却などの可能性</label>
+          <textarea id="f2_exit" name="f2_exit"></textarea>
+        </div>
+        <div class="field">
+          <label for="f2_invest">F-2. 大きな設備投資・事業転換等の予定</label>
+          <textarea id="f2_invest" name="f2_invest"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="f3_employees">F-3. 従業員数（正社員・パート等）</label>
+          <textarea id="f3_employees" name="f3_employees"></textarea>
+        </div>
+        <div class="field">
+          <label for="f3_maintain">F-3. 今後5年間、従業員数8割維持の見込み</label>
+          <select id="f3_maintain" name="f3_maintain">
+            <option value="">選択してください</option>
+            <option>概ね維持できる見込み</option>
+            <option>一定の減少見込みだが説明可能</option>
+            <option>大きく変動する可能性がある</option>
+            <option>業態的に予測が難しい</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f3_special">F-3. 人員増減が大きい特殊事情</label>
+          <textarea id="f3_special" name="f3_special" placeholder="例）季節要因・プロジェクト終了予定など"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- G. 財務・自社株評価・担保余力 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">G.</span> 財務・自社株評価・担保余力
+        </div>
+        <div class="section-note">決算内容・株価水準・担保方針</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="g1_fs">G-1. 直近3期分決算書の把握状況</label>
+          <select id="g1_fs" name="g1_fs">
+            <option value="">選択してください</option>
+            <option>3期分とも把握・入手済み</option>
+            <option>一部のみ把握している</option>
+            <option>これから入手予定</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="g1_debt">G-1. 借入金残高・担保状況</label>
+          <textarea id="g1_debt" name="g1_debt"></textarea>
+        </div>
+        <div class="field">
+          <label for="g1_repayment">G-1. 大口返済・リスケジュール予定の有無</label>
+          <textarea id="g1_repayment" name="g1_repayment"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="g2_method">G-2. 自社株評価方法のイメージ</label>
+          <textarea id="g2_method" name="g2_method" placeholder="例）類似業種比準方式／純資産方式／両者併用 など"></textarea>
+        </div>
+        <div class="field">
+          <label for="g2_value">G-2. 現時点の概算株価・総額イメージ</label>
+          <textarea id="g2_value" name="g2_value"></textarea>
+        </div>
+        <div class="field">
+          <label for="g2_future_value">G-2. 想定承継時点での株価見通し</label>
+          <textarea id="g2_future_value" name="g2_future_value" placeholder="業績成長・含み益の顕在化等を踏まえたコメント"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="g3_tax_defer">G-3. 納税猶予税額（概算）</label>
+          <textarea id="g3_tax_defer" name="g3_tax_defer" placeholder="後日シミュレーション結果を記載する欄として利用"></textarea>
+        </div>
+        <div class="field">
+          <label for="g3_collateral">G-3. 担保に供出できる資産（株式以外を含む）</label>
+          <textarea id="g3_collateral" name="g3_collateral"></textarea>
+        </div>
+        <div class="field">
+          <label for="g3_feeling">G-3. 担保提供・差押リスクへの心理的抵抗感</label>
+          <select id="g3_feeling" name="g3_feeling">
+            <option value="">選択してください</option>
+            <option>比較的受け入れられる</option>
+            <option>条件次第で受け入れ可能</option>
+            <option>かなり抵抗感が強い</option>
+            <option>まだイメージが湧いていない</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- H. 組織再編・M&A -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">H.</span> 組織再編・M&A・ガバナンス
+        </div>
+        <div class="section-note">持株会社化・分社化・売却可能性</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="h1_holdings">H-1. 持株会社化・分社化・合併等の構想</label>
+          <textarea id="h1_holdings" name="h1_holdings"></textarea>
+        </div>
+        <div class="field">
+          <label for="h2_ma">H-2. 将来のM&A・第三者への株式譲渡の可能性</label>
+          <textarea id="h2_ma" name="h2_ma"></textarea>
+        </div>
+        <div class="field">
+          <label for="h2_capital_policy">H-2. 外部資本（ファンド・ベンチャー投資等）の受け入れ構想</label>
+          <textarea id="h2_capital_policy" name="h2_capital_policy"></textarea>
+        </div>
+        <div class="field">
+          <label for="h3_cancel_risk">H-3. 特例取消事由に関わりそうなイベントの可能性</label>
+          <select id="h3_cancel_risk" name="h3_cancel_risk">
+            <option value="">選択してください</option>
+            <option>当面は大きな予定なし</option>
+            <option>状況次第で検討する可能性あり</option>
+            <option>近い将来に具体的な計画がある</option>
+            <option>未定・不明</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="h3_memo">H-3. 取消リスクに関するメモ</label>
+          <textarea id="h3_memo" name="h3_memo"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- I. 報告・届出・事務負担 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">I.</span> 報告・届出・事務負担への対応力
+        </div>
+        <div class="section-note">年次報告・継続届出の体制整備</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="i1_understand">I-1. 報告義務（年次報告・継続届出）の理解状況</label>
+          <select id="i1_understand" name="i1_understand">
+            <option value="">選択してください</option>
+            <option>概ね理解している</option>
+            <option>概要は理解したが細部はこれから</option>
+            <option>ほとんど理解できていない</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="i1_staff">I-1. 社内での担当者（総務・経理等）の確保状況</label>
+          <textarea id="i1_staff" name="i1_staff"></textarea>
+        </div>
+        <div class="field">
+          <label for="i2_system">I-2. スケジュール管理・チェックリスト整備の見込み</label>
+          <textarea id="i2_system" name="i2_system"></textarea>
+        </div>
+        <div class="field">
+          <label for="i2_consult_flow">I-2. 重要な意思決定時に顧問税理士へ相談するフロー構築の可否</label>
+          <select id="i2_consult_flow" name="i2_consult_flow">
+            <option value="">選択してください</option>
+            <option>社内ルールとして組み込める</option>
+            <option>一応意識する程度になりそう</option>
+            <option>なかなか浸透しない可能性が高い</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- J. 他の選択肢・リスク許容度 -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">J.</span> 他の選択肢との比較・オーナーのリスク許容度
+        </div>
+        <div class="section-note">一般措置・納税資金準備・その他手法</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="j1_other_options">J-1. 他の選択肢の検討状況</label>
+          <textarea id="j1_other_options" name="j1_other_options" placeholder="一般措置、生命保険・退職金による納税資金準備、種類株・信託・M&A等"></textarea>
+        </div>
+        <div class="field">
+          <label for="j2_merit_view">J-2. 「実質税負担ゼロ」で承継できるメリットの重視度</label>
+          <select id="j2_merit_view" name="j2_merit_view">
+            <option value="">選択してください</option>
+            <option>非常に重視している</option>
+            <option>ある程度重視している</option>
+            <option>それほど重視していない</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="j2_risk_tolerance">J-2. 取消時の一括納税・利子税リスクへの許容度</label>
+          <select id="j2_risk_tolerance" name="j2_risk_tolerance">
+            <option value="">選択してください</option>
+            <option>リスクを理解した上で受け入れられる</option>
+            <option>条件次第で受け入れ可能</option>
+            <option>かなり抵抗感がある</option>
+            <option>まだイメージできていない</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="j2_comment">J-2. メリット・リスクに関するオーナーのコメント</label>
+          <textarea id="j2_comment" name="j2_comment"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- K. 顧問側まとめ（内部用） -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">K.</span> 顧問側まとめ（内部用メモ）
+        </div>
+        <div class="section-note">要件判定・価値観・今後のアクション</div>
+      </div>
+      <div class="section-grid">
+        <div class="field">
+          <label for="k1_requirements">K-1. 制度要件面の適用可否（一次判定）</label>
+          <textarea id="k1_requirements" name="k1_requirements" placeholder="会社要件・株主構成・後継者要件・雇用要件などを整理"></textarea>
+        </div>
+        <div class="field">
+          <label for="k2_values">K-2. オーナーの価値観から見た適否</label>
+          <textarea id="k2_values" name="k2_values"></textarea>
+        </div>
+        <div class="field">
+          <label for="k3_actions">K-3. 今後のアクションプラン（ToDo）</label>
+          <textarea id="k3_actions" name="k3_actions" placeholder="自社株評価、株主構成案、家族会議、特例承継計画ドラフト等"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- 要約生成 -->
+    <div class="summary-card">
+      <h2>入力内容の要約テキスト</h2>
+      <div class="summary-actions">
+        <button type="button" id="summaryBtn">要約テキストを生成</button>
+        <button type="button" class="secondary" id="copyBtn">テキストをコピー</button>
+      </div>
+      <textarea id="summaryText" placeholder="「要約テキストを生成」ボタンで、ラベル＋入力値の一覧をここに出力します。"></textarea>
+    </div>
+
+    <div class="footer-note">
+      © 2025 税理士法人松本会計事務所
+    </div>
+  </form>
+</div>
+
+<script>
+  const STORAGE_KEY = 'hearing_form_data_v1';
+  const statusEl = document.getElementById('statusMessage');
+
+  // ステータスメッセージ表示関数
+  function showStatus(msg, type = 'success') {
+    statusEl.textContent = msg;
+    statusEl.className = type === 'error' ? 'error' : '';
+    statusEl.classList.add('visible');
+    setTimeout(() => {
+      statusEl.classList.remove('visible');
+    }, 3000);
+  }
+
+  // 保存機能
+  document.getElementById('saveBtn').addEventListener('click', function(){
+    try {
+      const inputs = document.querySelectorAll('input, textarea, select');
+      const data = {};
+      inputs.forEach(input => {
+        if(input.id) {
+          if(input.type === 'checkbox' || input.type === 'radio'){
+             data[input.id] = input.checked; // 念のためチェックボックス対応
+          } else {
+             data[input.id] = input.value;
+          }
+        }
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      showStatus('ブラウザに一時保存しました');
+    } catch(e) {
+      console.error(e);
+      showStatus('保存に失敗しました', 'error');
+    }
+  });
+
+  // 読み込み機能
+  document.getElementById('loadBtn').addEventListener('click', function(){
+    try {
+      const json = localStorage.getItem(STORAGE_KEY);
+      if(!json) {
+        showStatus('保存されたデータがありません', 'error');
+        return;
+      }
+      if(!confirm('現在入力中の内容を破棄し、保存データを読み込みますか？')) return;
+
+      const data = JSON.parse(json);
+      Object.keys(data).forEach(key => {
+        const el = document.getElementById(key);
+        if(el) {
+          if(el.type === 'checkbox' || el.type === 'radio'){
+             el.checked = data[key];
+          } else {
+             el.value = data[key];
+          }
+        }
+      });
+      showStatus('保存データを読み込みました');
+    } catch(e) {
+      console.error(e);
+      showStatus('読み込みに失敗しました', 'error');
+    }
+  });
+
+  // 印刷
+  document.getElementById('printBtn').addEventListener('click', function(){
+    window.print();
+  });
+
+  // 全クリア
+  document.getElementById('clearBtn').addEventListener('click', function(){
+    if(!confirm('フォームの入力内容をすべてクリアします。よろしいですか？（保存データは消えません）')) return;
+    document.getElementById('hearingForm').reset();
+    document.getElementById('summaryText').value = '';
+    showStatus('入力内容をクリアしました');
+  });
+
+  // 要約テキスト生成
+  document.getElementById('summaryBtn').addEventListener('click', function(){
+    const fields = document.querySelectorAll('.field');
+    const lines = [];
+    fields.forEach(function(field){
+      const label = field.querySelector('label');
+      if(!label) return;
+      const input = field.querySelector('input, textarea, select');
+      if(!input) return;
+      let value = '';
+      if(input.tagName === 'SELECT'){
+        value = input.value || input.options[input.selectedIndex]?.text || '';
+      }else if(input.type === 'checkbox' || input.type === 'radio'){
+        value = input.checked ? 'はい' : 'いいえ';
+      }else{
+        value = input.value;
+      }
+      if(value && value.trim() !== ''){
+        const labelText = label.textContent.replace(/\s+/g,' ').trim();
+        lines.push('【' + labelText + '】\n' + value.trim() + '\n');
+      }
+    });
+    document.getElementById('summaryText').value = lines.join('\n');
+    showStatus('要約テキストを生成しました');
+  });
+
+  // 要約テキストコピー
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    const ta = document.getElementById('summaryText');
+    if(!ta.value){
+      showStatus('コピーする内容がありません', 'error');
+      return;
+    }
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    try{
+      const ok = document.execCommand('copy');
+      if(!ok && navigator.clipboard){
+        navigator.clipboard.writeText(ta.value);
+      }
+      showStatus('クリップボードにコピーしました');
+    }catch(e){
+      showStatus('コピーに失敗しました', 'error');
+    }
+  });
+</script>
+</body>
+</html>
