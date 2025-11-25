@@ -15,7 +15,7 @@
       --accent-soft:rgba(87,136,153,.08);
       --border:#d0dde2;
       --danger:#b91c1c;
-      --success:#2d8a4e;
+      --success:#2d8a4e; /* 追加: 成功時の色 */
     }
     *{box-sizing:border-box;}
     html,body{
@@ -185,6 +185,10 @@
       font-size:0.8rem;
       margin-bottom:2px;
     }
+    /* チェックボックス用のラベル調整 */
+    .field label input[type="checkbox"] {
+      margin-right: 6px;
+    }
     .field small{
       display:block;
       font-size:0.72rem;
@@ -303,7 +307,7 @@
 
   <div class="toolbar-container">
     <div class="toolbar">
-      <!-- 新機能: 一時保存と読み込み -->
+      <!-- 一時保存と読み込み -->
       <button type="button" class="primary-save" id="saveBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
         一時保存
@@ -319,7 +323,7 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
         印刷
       </button>
-      <button type="button" class="secondary" id="clearBtn">クリア</button>
+      <button type="button" class="secondary" id="clearBtn">すべてクリア</button>
       
       <!-- ステータス表示エリア -->
       <span id="statusMessage"></span>
@@ -951,6 +955,99 @@
       </div>
     </section>
 
+    <!-- L. 初回クライアント向け：預かり資料チェックリスト -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="code">L.</span> 初回クライアント向け：預かり資料チェックリスト
+        </div>
+        <div class="section-note">初めてのご相談の場合にお預かりしたい資料（預かったものにチェック）</div>
+      </div>
+
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l1_fs3" name="l1_fs3">
+          L-1. 直近3期分の決算書一式（貸借対照表・損益計算書・株主資本等変動計算書・附属明細書）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l2_corp_return" name="l2_corp_return">
+          L-2. 直近3期分の法人税・地方税申告書一式（別表・勘定科目内訳明細書を含む）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l3_articles" name="l3_articles">
+          L-3. 最新の定款
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l4_registry" name="l4_registry">
+          L-4. 商業登記簿謄本（現在事項全部証明書）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l5_shareholder_list" name="l5_shareholder_list">
+          L-5. 株主名簿または株主構成が分かる資料（株主名・株数・議決権割合 等）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l6_director_list" name="l6_director_list">
+          L-6. 役員名簿・組織図
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l7_trial_bs" name="l7_trial_bs">
+          L-7. 直近の試算表（最新月次・部門別があれば部門別含む）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l8_fixed_assets" name="l8_fixed_assets">
+          L-8. 固定資産台帳・減価償却明細（税務申告書添付資料でも可）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l9_realestate_registry" name="l9_realestate_registry">
+          L-9. 会社所有不動産の登記事項証明書（該当があれば）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l10_loans" name="l10_loans">
+          L-10. 借入金一覧・返済予定表、金融機関との契約書（写しで可）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l11_insurance" name="l11_insurance">
+          L-11. 生命保険契約一覧（会社契約・経営者個人契約のうち事業承継・納税資金に関係するもの）
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l12_group" name="l12_group">
+          L-12. グループ会社・関連会社の一覧と持株比率が分かる資料
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="l13_plan" name="l13_plan">
+          L-13. 事業計画書・中期経営計画、金融機関提出用資料（あれば）
+        </label>
+      </div>
+      <div class="field">
+        <label for="l14_other">L-14. その他、事業承継に関係しそうな資料・備考</label>
+        <textarea id="l14_other" name="l14_other" placeholder="例）M&Aの提案書、過去の株価算定書、オーナー個人資産の概要一覧 等"></textarea>
+      </div>
+    </section>
+
     <!-- 要約生成 -->
     <div class="summary-card">
       <h2>入力内容の要約テキスト</h2>
@@ -968,7 +1065,7 @@
 </div>
 
 <script>
-  const STORAGE_KEY = 'hearing_form_data_v1';
+  const STORAGE_KEY = 'hearing_form_data_with_checklist';
   const statusEl = document.getElementById('statusMessage');
 
   // ステータスメッセージ表示関数
@@ -989,7 +1086,7 @@
       inputs.forEach(input => {
         if(input.id) {
           if(input.type === 'checkbox' || input.type === 'radio'){
-             data[input.id] = input.checked; // 念のためチェックボックス対応
+             data[input.id] = input.checked;
           } else {
              data[input.id] = input.value;
           }
@@ -1054,13 +1151,20 @@
       const input = field.querySelector('input, textarea, select');
       if(!input) return;
       let value = '';
+
       if(input.tagName === 'SELECT'){
         value = input.value || input.options[input.selectedIndex]?.text || '';
-      }else if(input.type === 'checkbox' || input.type === 'radio'){
-        value = input.checked ? 'はい' : 'いいえ';
+      }else if(input.type === 'checkbox'){
+        // 未チェックのチェックボックスは要約に出さない
+        if(!input.checked) return;
+        value = '預かり済み';
+      }else if(input.type === 'radio'){
+        if(!input.checked) return;
+        value = input.value || '選択';
       }else{
         value = input.value;
       }
+
       if(value && value.trim() !== ''){
         const labelText = label.textContent.replace(/\s+/g,' ').trim();
         lines.push('【' + labelText + '】\n' + value.trim() + '\n');
